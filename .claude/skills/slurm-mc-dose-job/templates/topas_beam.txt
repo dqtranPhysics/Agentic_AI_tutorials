@@ -1,0 +1,40 @@
+# Minimal TOPAS proton pencil beam into a water phantom.
+# Rendered per array task: {{ENERGY_MEV}}, {{SEED}}, {{HISTORIES}}, {{OUTFILE}}
+
+i:Ts/Seed = {{SEED}}
+i:Ts/NumberOfThreads = {{CPUS}}
+b:Ts/PauseBeforeQuit = "False"
+s:Ts/G4DataDirectory = "$G4DATA"
+
+s:Ge/World/Material = "Vacuum"
+d:Ge/World/HLX = 50 cm
+d:Ge/World/HLY = 50 cm
+d:Ge/World/HLZ = 50 cm
+
+s:Ge/Phantom/Type     = "TsBox"
+s:Ge/Phantom/Parent   = "World"
+s:Ge/Phantom/Material = "G4_WATER"
+d:Ge/Phantom/HLX = 10 cm
+d:Ge/Phantom/HLY = 10 cm
+d:Ge/Phantom/HLZ = 20 cm
+i:Ge/Phantom/ZBins = 400
+
+s:So/Beam/Type                     = "Beam"
+s:So/Beam/Component                = "BeamPosition"
+s:So/Beam/BeamParticle             = "proton"
+d:So/Beam/BeamEnergy               = {{ENERGY_MEV}} MeV
+u:So/Beam/BeamEnergySpread         = 0.5
+s:So/Beam/BeamPositionDistribution = "Gaussian"
+d:So/Beam/BeamPositionSpreadX      = 3 mm
+d:So/Beam/BeamPositionSpreadY      = 3 mm
+i:So/Beam/NumberOfHistoriesInRun   = {{HISTORIES}}
+
+d:Ge/BeamPosition/TransZ = Ge/Phantom/HLZ cm
+d:Ge/BeamPosition/RotX   = 180. deg
+
+s:Sc/Dose/Quantity                  = "DoseToMedium"
+s:Sc/Dose/Component                 = "Phantom"
+s:Sc/Dose/OutputFile                = "{{OUTFILE}}"
+s:Sc/Dose/OutputType                = "csv"
+s:Sc/Dose/IfOutputFileAlreadyExists = "Overwrite"
+sv:Sc/Dose/Report                   = 2 "Sum" "Standard_Deviation"
